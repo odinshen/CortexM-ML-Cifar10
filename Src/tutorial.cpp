@@ -50,7 +50,7 @@ void run_nn2() {
 	arm_convolve_HWC_q7_fast(
 		buffer2, CONV2_IN_DIM /*16*/, CONV2_IN_CH /*32*/,        // input
 		conv2_wt, CONV2_OUT_CH /*32*/, 5, 2, 1,                  // conv kernel
-		conv2_bias, 0, 0,                                        // bias
+		conv2_bias, 0, 9,                                        // bias
 		buffer1, CONV2_OUT_DIM /*16*/, (q15_t*)col_buffer, NULL  // output
 	);
 	
