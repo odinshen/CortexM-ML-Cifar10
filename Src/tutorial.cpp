@@ -29,11 +29,22 @@ void run_nn2() {
 	q7_t* buffer1 = scratch_buffer;
 	q7_t* buffer2 = buffer1 + 32768;
 
+  arm_convolve_HWC_q7_RGB(input_data, 32, 3, conv1_wt, 32, 5, 2, 1, conv1_bias, 0, 9, buffer1, 32, (q15_t*)col_buffer, NULL);
+  arm_maxpool_q7_HWC(buffer1, 32, 32, 3, 0, 2, 16, col_buffer, buffer2);
+  arm_relu_q7(buffer2, 16*16*32);
+  arm_convolve_HWC_q7_fast(buffer2, 16, 32, conv2_wt, 32, 5, 2, 1, conv2_bias, 0, 9, buffer1, 16, (q15_t*)col_buffer, NULL);
+  arm_relu_q7(buffer1, 16*16*32);
+  arm_avepool_q7_HWC(buffer1, 16, 32, 3, 0, 2, 8, col_buffer, buffer2);
+  arm_convolve_HWC_q7_fast(buffer2, 8, 32, conv3_wt, 64, 5, 2, 1, conv3_bias, 0, 9, buffer1, 8, (q15_t*)col_buffer, NULL);
+  arm_relu_q7(buffer1, 8*8*64);
+  arm_avepool_q7_HWC(buffer1, 8, 64, 3, 0, 2, 4, col_buffer, buffer2);
+  arm_fully_connected_q7_opt(buffer2, ip1_wt, 1024, 10, 3, 5, ip1_bias, output_data, (q15_t*)col_buffer);
+  
 	arm_convolve_HWC_q7_RGB(
-		input_data, CONV1_IN_DIM, CONV1_IN_CH, 
-		conv1_wt, CONV1_OUT_CH, CONV1_KER_DIM, CONV1_PAD, CONV1_STRIDE, 
-		conv1_bias, CONV1_BIAS_LSHIFT, CONV1_OUT_RSHIFT, 
-		buffer1, CONV1_OUT_DIM, (q15_t*)col_buffer, NULL
+		input_data, CONV1_IN_DIM /*32*/, CONV1_IN_CH /*3*/,
+		conv1_wt, CONV1_OUT_CH /*32*/, 5, 2, 1, 
+		conv1_bias, 0, 9, 
+		buffer1, CONV1_OUT_DIM /*32*/, (q15_t*)col_buffer, NULL
 	);
 	
 	arm_maxpool_q7_HWC(
