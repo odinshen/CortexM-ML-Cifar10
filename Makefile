@@ -150,18 +150,20 @@ PERIFLIB_SOURCES =
 # binaries
 #######################################
 
-ARM_GCC_PATH = ~/arm_tools/gcc-arm-none-eabi-7-2017-q4-major/bin
+#ARM_GCC_PATH = ~/arm_tools/gcc-arm-none-eabi-7-2017-q4-major/bin
 BINPATH = $(ARM_GCC_PATH)
 PREFIX = arm-none-eabi-
-CC = $(BINPATH)/$(PREFIX)gcc
-CPP = $(BINPATH)/$(PREFIX)g++
-AS = $(BINPATH)/$(PREFIX)gcc -x assembler-with-cpp
-CP = $(BINPATH)/$(PREFIX)objcopy
-AR = $(BINPATH)/$(PREFIX)ar
-SZ = $(BINPATH)/$(PREFIX)size
+CC = $(PREFIX)gcc
+CPP = $(PREFIX)g++
+AS = $(PREFIX)gcc -x assembler-with-cpp
+CP = $(PREFIX)objcopy
+AR = $(PREFIX)ar
+SZ = $(PREFIX)size
 HEX = $(CP) -O ihex
 BIN = $(CP) -O binary -S
- 
+
+
+
 #######################################
 # CFLAGS
 #######################################
